@@ -1,3 +1,5 @@
+using WebAdvert.Api.Mapping;
+
 namespace WebAdvert.Api
 {
     public class Program
@@ -7,7 +9,7 @@ namespace WebAdvert.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddAutoMapper(typeof(AdvertProfile));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
