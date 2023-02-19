@@ -30,9 +30,23 @@ namespace WebAdvert.Api.Services
             return dto.Id;
         }
 
-        public Task<bool> Confirm(ConfirmAdvertModel confirmAdvertModel)
+        public async Task Confirm(ConfirmAdvertModel confirmAdvertModel)
         {
-            throw new NotImplementedException();
+            using var context = new DynamoDBContext(_amazonDynamoDb);
+            var record = await context.LoadAsync<AdvertDto>(confirmAdvertModel.Id);
+            if (record is null)
+                throw new KeyNotFoundException($"Record doesn't exist {confirmAdvertModel.Id}");
+
+            if (confirmAdvertModel.Status is AdvertStatus.Active)
+            {
+                record.AdvertStatus = AdvertStatus.Active;
+                await context.SaveAsync(record);
+            }
+            else
+            {
+                await context.DeleteAsync(record);
+            }
+                
         }
     }
 }

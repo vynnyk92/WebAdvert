@@ -1,4 +1,6 @@
+using Amazon.DynamoDBv2;
 using WebAdvert.Api.Mapping;
+using WebAdvert.Api.Services;
 
 namespace WebAdvert.Api
 {
@@ -10,6 +12,8 @@ namespace WebAdvert.Api
 
             // Add services to the container.
             builder.Services.AddAutoMapper(typeof(AdvertProfile));
+            builder.Services.AddSingleton<IAmazonDynamoDB, AmazonDynamoDBClient>();
+            builder.Services.AddTransient<IAdvertStorageService, DynamoAdvertStorageService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
