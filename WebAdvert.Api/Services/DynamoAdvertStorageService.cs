@@ -48,5 +48,20 @@ namespace WebAdvert.Api.Services
             }
                 
         }
+
+        public async Task<bool> CheckTableExist()
+        {
+            try
+            {
+                var data = await _amazonDynamoDb.DescribeTableAsync("adverts");
+                return string.Equals(data.Table.TableStatus, "Active", StringComparison.CurrentCultureIgnoreCase);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+           
+        }
     }
 }
