@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 using AutoMapper;
 using WebAdvert.Api.DTOs;
 using WebAdvert.Models;
@@ -62,6 +63,24 @@ namespace WebAdvert.Api.Services
                 return false;
             }
            
+        }
+
+        public async Task<string> GetAdvertInfo(string id)
+        {
+            var qRequest = new QueryRequest
+            {
+                TableName = "adverts",
+                KeyConditionExpression = "Id = :v_Id",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue> 
+                {
+                    {":v_Id", new AttributeValue { S =  id }}
+                },
+                ScanIndexForward = false,
+                Limit = 1
+            };
+
+            var data = await _amazonDynamoDb.QueryAsync(qRequest);
+            return data.Items.FirstOrDefault()?["Title"]?.S ?? string.Empty;
         }
     }
 }

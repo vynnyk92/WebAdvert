@@ -2,6 +2,7 @@
 using WebAdvert.Api.DTOs;
 using WebAdvert.Api.Services;
 using WebAdvert.Models;
+using WebAdvert.Models.Messages;
 
 namespace WebAdvert.Api.Controllers
 {
@@ -10,10 +11,12 @@ namespace WebAdvert.Api.Controllers
     public class AdvertController : ControllerBase
     {
         private readonly IAdvertStorageService _storageService;
+        private readonly IMessagePublisher _messagePublisher;
 
-        public AdvertController(IAdvertStorageService storageService)
+        public AdvertController(IAdvertStorageService storageService, IMessagePublisher messagePublisher)
         {
             _storageService = storageService;
+            _messagePublisher = messagePublisher;
         }
 
         [HttpPost]
@@ -43,6 +46,7 @@ namespace WebAdvert.Api.Controllers
             try
             {
                 await _storageService.Confirm(advertModel);
+                await _messagePublisher.PublishAsync(advertModel);
                 return Ok();
             }
             catch (KeyNotFoundException e)
